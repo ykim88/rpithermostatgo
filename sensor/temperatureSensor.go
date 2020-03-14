@@ -1,22 +1,22 @@
 package sensor
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"strconv"
 	"strings"
-
-	"RPiThermostatGo/sensor/filesystem"
+	"time"
 )
 
-const sensorsPath = "/sys/bus/w1/devices/%s/hwmon/hwmon1/temp1_input"
+const sensorsPath = "/sys/bus/w1/devices/%s/w1_slave"
 
-type TemperatureSensor interface {
-	AuditChanges() (<-chan Temperature, error)
+type Sensor interface {
+	AuditChanges() <-chan Temperature
 	Close()
 }
 
-func Sensor() (TemperatureSensor, error) {
+func TemperatureSensor() (Sensor, error) {
 	data, err := ioutil.ReadFile("/sys/bus/w1/devices/w1_bus_master1/w1_master_slaves")
 	if err != nil {
 		return nil, err
@@ -33,22 +33,17 @@ func Sensor() (TemperatureSensor, error) {
 type temperaturSensor struct {
 	fullPath    string
 	running     bool
-	fileWatcher filesystem.FsWatcher
+	timer       *time.Timer
 }
 
-func (t *temperaturSensor) Close() {
-	t.running = false
-	t.fileWatcher.Stop()
+func (s *temperaturSensor) Close() {
+	s.running = false
+	s.timer.Stop()
 }
 
-func (s *temperaturSensor) AuditChanges() (<-chan Temperature, error) {
+func (s *temperaturSensor) AuditChanges() <-chan Temperature {
 
-	s.fileWatcher = filesystem.NewFsWatcher(s.fullPath)
-	changeEvent, err := s.fileWatcher.Start()
-	if err != nil {
-		return nil, err
-	}
-
+	s.timer = time.NewTimer(time.Second * 5)
 	ch := make(chan Temperature)
 
 	go func(sensor *temperaturSensor, valueRead chan Temperature) {
@@ -56,19 +51,12 @@ func (s *temperaturSensor) AuditChanges() (<-chan Temperature, error) {
 		sensor.running = true
 
 		for sensor.running {
-			ev, ok := <-changeEvent
-			if !ok {
-				sensor.running = false
-				continue
-			}
-			if ev.Error != nil {
-				continue
-			}
 			valueRead <- readSensor(sensor.fullPath)
+			<-s.timer.C
 		}
 
 	}(s, ch)
-	return ch, nil
+	return ch
 }
 
 func readSensor(fullpath string) Temperature {
@@ -79,7 +67,12 @@ func readSensor(fullpath string) Temperature {
 
 	raw := string(data)
 
-	temperatureValue, err := strconv.ParseFloat(raw[:len(raw)-1], 64)
+	indexTemp := strings.LastIndex(raw, "t=")
+	if indexTemp == -1 {
+		return &invalidTemperature{error: errors.New("failed to read sensor temperature")}
+	}
+
+	temperatureValue, err := strconv.ParseFloat(raw[indexTemp+2:len(raw)-1], 64)
 	if err != nil {
 		return &invalidTemperature{error: err}
 	}

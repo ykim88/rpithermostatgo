@@ -7,16 +7,13 @@ import (
 )
 
 func main() {
-	sensor, err := sensor.Sensor()
+	sensor, err := sensor.TemperatureSensor()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	defer sensor.Close()
 
-	temperatureChanges, err := sensor.AuditChanges()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	temperatureChanges := sensor.AuditChanges()
 
 	for {
 		temperature := <-temperatureChanges
