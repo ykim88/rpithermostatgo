@@ -11,6 +11,7 @@ func main() {
 	connectionString := "/tmp/RPiThermostatGo.db"
 	storage.CreateDbSchemaIfNotExists(connectionString)
 	storage := storage.NewSQLiteStorageGateway(connectionString)
+
 	sensor, err := sensor.TemperatureSensor()
 	if err != nil {
 		log.Fatal(err.Error())

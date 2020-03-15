@@ -1,10 +1,9 @@
 package sensor
 
 import (
-	"errors"
+	"RPiThermostatGo/sensor/driver"
 	"fmt"
 	"io/ioutil"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -14,6 +13,10 @@ const sensorsPath = "/sys/bus/w1/devices/%s/w1_slave"
 type Sensor interface {
 	AuditChanges() <-chan Temperature
 	Close()
+}
+
+type sensorDriver interface {
+	Read() (float64, error)
 }
 
 func TemperatureSensor() (Sensor, error) {
@@ -27,13 +30,13 @@ func TemperatureSensor() (Sensor, error) {
 		sensors = sensors[:len(sensors)-1]
 	}
 
-	return &temperaturSensor{fullPath: fmt.Sprintf(sensorsPath, sensors[0])}, nil
+	return &temperaturSensor{driver: driver.NewDriver(fmt.Sprintf(sensorsPath, sensors[0]))}, nil
 }
 
 type temperaturSensor struct {
-	fullPath    string
-	running     bool
-	timer       *time.Timer
+	driver  sensorDriver
+	running bool
+	timer   *time.Timer
 }
 
 func (s *temperaturSensor) Close() {
@@ -51,31 +54,14 @@ func (s *temperaturSensor) AuditChanges() <-chan Temperature {
 		sensor.running = true
 
 		for sensor.running {
-			valueRead <- readSensor(sensor.fullPath)
+			value, err := sensor.driver.Read()
+			if err != nil {
+				valueRead <- &invalidTemperature{error: err}
+			}
+			valueRead <- &temperature{value: value}
 			<-s.timer.C
 		}
 
 	}(s, ch)
 	return ch
-}
-
-func readSensor(fullpath string) Temperature {
-	data, err := ioutil.ReadFile(fullpath)
-	if err != nil {
-		return &invalidTemperature{error: err}
-	}
-
-	raw := string(data)
-
-	indexTemp := strings.LastIndex(raw, "t=")
-	if indexTemp == -1 {
-		return &invalidTemperature{error: errors.New("failed to read sensor temperature")}
-	}
-
-	temperatureValue, err := strconv.ParseFloat(raw[indexTemp+2:len(raw)-1], 64)
-	if err != nil {
-		return &invalidTemperature{error: err}
-	}
-
-	return &temperature{value: temperatureValue}
 }
