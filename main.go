@@ -1,6 +1,7 @@
 package main
 
 import (
+	"RPiThermostatGo/heat"
 	"RPiThermostatGo/sensor"
 	"RPiThermostatGo/storage"
 	"fmt"
@@ -8,9 +9,11 @@ import (
 )
 
 func main() {
+
 	connectionString := "/tmp/RPiThermostatGo.db"
 	storage.CreateDbSchemaIfNotExists(connectionString)
 	storage := storage.NewSQLiteStorageGateway(connectionString)
+	heatProvider := heat.NewHeatStateProvider()
 
 	sensor, err := sensor.TemperatureSensor()
 	if err != nil {
@@ -22,11 +25,11 @@ func main() {
 
 	for {
 		temperature := <-temperatureChanges
-		value, err := temperature.Celsius()
-		if err != nil {
-			fmt.Println(err.Error())
+		if temperature.Error != nil {
+			fmt.Println(temperature.Error.Error())
 		}
+		heatProvider.Next(temperature.Celsius()).Execute()
 		storage.Save(temperature)
-		fmt.Println(value)
+		fmt.Println(temperature.Celsius())
 	}
 }

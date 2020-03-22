@@ -11,7 +11,7 @@ import (
 const sensorsPath = "/sys/bus/w1/devices/%s/w1_slave"
 
 type Sensor interface {
-	AuditChanges() <-chan Temperature
+	AuditChanges() <-chan *Temperature
 	Close()
 }
 
@@ -44,21 +44,19 @@ func (s *temperaturSensor) Close() {
 	s.timer.Stop()
 }
 
-func (s *temperaturSensor) AuditChanges() <-chan Temperature {
+func (s *temperaturSensor) AuditChanges() <-chan *Temperature {
 
 	s.timer = time.NewTimer(time.Second * 5)
-	ch := make(chan Temperature)
 
-	go func(sensor *temperaturSensor, valueRead chan Temperature) {
+	ch := make(chan *Temperature)
+
+	go func(sensor *temperaturSensor, valueRead chan *Temperature) {
 		defer close(valueRead)
 		sensor.running = true
 
 		for sensor.running {
 			value, err := sensor.driver.Read()
-			if err != nil {
-				valueRead <- &invalidTemperature{error: err}
-			}
-			valueRead <- &temperature{value: value}
+			valueRead <- &Temperature{Error: err, value: value}
 			<-s.timer.C
 		}
 

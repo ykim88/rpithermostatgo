@@ -7,6 +7,8 @@ import (
 	"syscall"
 )
 
+const errorValue float64 = -56000
+
 func NewDriver(path string) *fsdriver {
 	return &fsdriver{sysfspath: path}
 }
@@ -23,12 +25,12 @@ func (d *fsdriver) Read() (float64, error) {
 
 	indexTemp := strings.LastIndex(raw, "t=")
 	if indexTemp == -1 {
-		return 0.0, errors.New("failed to read sensor temperature")
+		return errorValue, errors.New("failed to read sensor temperature")
 	}
 
 	temperatureValue, err := strconv.ParseFloat(raw[indexTemp+2:len(raw)], 64)
 	if err != nil {
-		return 0.0, err
+		return errorValue, err
 	}
 
 	return temperatureValue, nil

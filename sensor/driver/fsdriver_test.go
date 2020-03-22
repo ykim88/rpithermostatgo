@@ -23,6 +23,6 @@ func TestNotValid(t *testing.T) {
 
 	value, err := driver.Read()
 
-	assert.Equal(t, float64(0), value)
+	assert.Equal(t, float64(-56000), value)
 	assert.NotNil(t, err)
 }

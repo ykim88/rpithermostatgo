@@ -8,7 +8,7 @@ import (
 )
 
 type StorageGateway interface {
-	Save(celsius sensor.Temperature) error
+	Save(celsius *sensor.Temperature) error
 }
 
 func NewSQLiteStorageGateway(connectionString string) StorageGateway {
@@ -20,7 +20,7 @@ type sqlLiteStorageGateway struct {
 	connectionString string
 }
 
-func (g *sqlLiteStorageGateway) Save(temperature sensor.Temperature) error {
+func (g *sqlLiteStorageGateway) Save(temperature *sensor.Temperature) error {
 	connection, err := g.openConnection()
 	if err != nil {
 		return err
@@ -30,8 +30,8 @@ func (g *sqlLiteStorageGateway) Save(temperature sensor.Temperature) error {
 	if err != nil {
 		return err
 	}
-	celsius, err := temperature.Celsius()
-	insert.Exec(celsius)
+	celsius := temperature.Celsius()
+	_, err = insert.Exec(celsius)
 	if err != nil {
 		return err
 	}
