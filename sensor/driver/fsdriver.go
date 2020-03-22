@@ -1,10 +1,11 @@
 package driver
 
 import (
+	"bytes"
 	"errors"
+	"os"
 	"strconv"
 	"strings"
-	"syscall"
 )
 
 const errorValue float64 = -56000
@@ -37,22 +38,13 @@ func (d *fsdriver) Read() (float64, error) {
 }
 
 func readFile(path string) (string, error) {
-	fd, err := syscall.Open(path, syscall.O_RDONLY|syscall.O_CLOEXEC|syscall.O_NONBLOCK, 0644)
-	defer syscall.Close(fd)
-	if err != nil {
-		return "", err
-	}
-	stat := syscall.Stat_t{}
-	err = syscall.Stat(path, &stat)
+	fd, err := os.Open(path)
+	defer fd.Close()
 	if err != nil {
 		return "", err
 	}
 
-	buffer := make([]byte, stat.Size)
-	_, err = syscall.Read(fd, buffer)
-	if err != nil {
-		return "", err
-	}
-
-	return string(buffer), nil
+	var buffer bytes.Buffer
+	buffer.ReadFrom(fd)
+	return string(buffer.Bytes()), nil
 }
