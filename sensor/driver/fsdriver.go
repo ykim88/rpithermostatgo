@@ -46,5 +46,6 @@ func readFile(path string) (string, error) {
 
 	var buffer bytes.Buffer
 	buffer.ReadFrom(fd)
-	return string(buffer.Bytes()), nil
+
+	return buffer.String(), nil
 }

@@ -45,9 +45,6 @@ func (s *temperaturSensor) Close() {
 }
 
 func (s *temperaturSensor) AuditChanges() <-chan *Temperature {
-
-	s.timer = time.NewTimer(time.Second * 5)
-
 	ch := make(chan *Temperature)
 
 	go func(sensor *temperaturSensor, valueRead chan *Temperature) {
@@ -57,7 +54,7 @@ func (s *temperaturSensor) AuditChanges() <-chan *Temperature {
 		for sensor.running {
 			value, err := sensor.driver.Read()
 			valueRead <- &Temperature{Error: err, value: value}
-			<-s.timer.C
+			<-time.After(time.Second * 5)
 		}
 
 	}(s, ch)
