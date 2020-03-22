@@ -36,7 +36,7 @@ func TestNotStart(t *testing.T) {
 type startStateFake struct {
 }
 
-func (h *startStateFake) Execute() error {
+func (h *startStateFake) Apply() error {
 
 	return nil
 }

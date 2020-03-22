@@ -28,7 +28,7 @@ func main() {
 		if temperature.Error != nil {
 			fmt.Println(temperature.Error.Error())
 		}
-		heatProvider.Next(temperature.Celsius()).Execute()
+		heatProvider.Next(temperature.Celsius()).Apply()
 		storage.Save(temperature)
 		fmt.Println(temperature.Celsius())
 	}

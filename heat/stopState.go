@@ -2,7 +2,7 @@ package heat
 
 type stopState struct{}
 
-func (s *stopState) Execute() error {
+func (s *stopState) Apply() error {
 
 	return nil
 }
