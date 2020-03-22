@@ -28,7 +28,7 @@ func (d *fsdriver) Read() (float64, error) {
 		return errorValue, errors.New("failed to read sensor temperature")
 	}
 
-	temperatureValue, err := strconv.ParseFloat(raw[indexTemp+2:len(raw)], 64)
+	temperatureValue, err := strconv.ParseFloat(raw[indexTemp+2:len(raw)-1], 64)
 	if err != nil {
 		return errorValue, err
 	}

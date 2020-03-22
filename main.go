@@ -20,6 +20,7 @@ func main() {
 
 	sensor, err := sensor.TemperatureSensor()
 	if err != nil {
+		sensor.Close()
 		log.Fatal(err.Error())
 	}
 	defer sensor.Close()
@@ -30,7 +31,7 @@ func main() {
 		temperature := <-temperatureChanges
 
 		if temperature.Error != nil {
-			log.Println(temperature.Error)
+			log.Println(temperature.Error.Error())
 		}
 
 		heatProvider.Next(temperature.Celsius()).Apply()
