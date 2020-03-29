@@ -1,7 +1,6 @@
 package driver
 
 import (
-	"periph.io/x/periph/conn/physic"
 	"periph.io/x/periph/devices/ds18b20"
 	"periph.io/x/periph/experimental/host/netlink"
 	"periph.io/x/periph/host"
@@ -46,7 +45,7 @@ func (d *periphDriver) Read() (float64, error) {
 		return -56, err
 	}
 
-	return temperature.Celsius() * float64(physic.Celsius), nil
+	return float64(temperature), nil
 }
 
 func (d *periphDriver) Close() error {

@@ -5,6 +5,7 @@ import (
 	"RPiThermostatGo/storage"
 	"testing"
 
+	_ "github.com/mattn/go-sqlite3" //sqliteDriver
 	"github.com/stretchr/testify/assert"
 )
 

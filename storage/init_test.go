@@ -21,7 +21,10 @@ func TestMain(m *testing.M) {
 
 func setup() error {
 	ConnectionString = fmt.Sprintf("%s/test%s.db", os.TempDir(), time.Now().Format(time.RFC3339Nano))
-	storage.CreateDbSchemaIfNotExists(ConnectionString)
+	err := storage.CreateDbSchemaIfNotExists(ConnectionString)
+	if err != nil {
+		return err
+	}
 	Database = new(TestDatabase)
 	return nil
 }
