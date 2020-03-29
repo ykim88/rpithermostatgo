@@ -7,18 +7,22 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/user"
 )
 
 func main() {
 	logFile := setupLog()
 	defer logFile.Close()
-
-	connectionString := "$HOME/storage/RPiThermostatGo.db"
-	err := storage.CreateDbSchemaIfNotExists(connectionString)
+	user, err := user.Current()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
+	connectionString := fmt.Sprintf("%s/storage/RPiThermostatGo.db", user.HomeDir)
+	err = storage.CreateDbSchemaIfNotExists(connectionString)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 	storage := storage.NewSQLiteStorageGateway(connectionString)
 	heatProvider := heat.NewHeatStateProvider()
 
