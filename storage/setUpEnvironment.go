@@ -13,11 +13,17 @@ func CreateDbSchemaIfNotExists(connectionString string) error {
 	}
 	defer connection.Close()
 
+	err = connection.Ping()
+	if err != nil {
+		return err
+	}
+
 	query, err := connection.Prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name=?")
 	if err != nil {
 		return err
 	}
 	defer query.Close()
+
 	var exists bool
 	err = query.QueryRow("Temperature").Scan(&exists)
 	if err != nil && sql.ErrNoRows != err {

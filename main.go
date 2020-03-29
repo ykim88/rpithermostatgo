@@ -12,13 +12,15 @@ import (
 func main() {
 	logFile := setupLog()
 	defer logFile.Close()
-
-	connectionString := "$HOME/storage/RPiThermostatGo.db"
-	err := storage.CreateDbSchemaIfNotExists(connectionString)
+	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-
+	connectionString := fmt.Sprintf("%s/storage/RPiThermostatGo.db", home)
+	err = storage.CreateDbSchemaIfNotExists(connectionString)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 	storage := storage.NewSQLiteStorageGateway(connectionString)
 	heatProvider := heat.NewHeatStateProvider()
 
