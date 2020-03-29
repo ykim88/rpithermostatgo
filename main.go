@@ -1,6 +1,7 @@
 package main
 
 import (
+	"RPiThermostatGo/api"
 	"RPiThermostatGo/heat"
 	"RPiThermostatGo/sensor"
 	"RPiThermostatGo/storage"
@@ -24,7 +25,24 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	storage := storage.NewSQLiteStorageGateway(connectionString)
+
+	gateway, err := storage.NewSQLiteReadingGateway(connectionString)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	api := api.New(api.TemperatureController(gateway))
+
+	go heatControl(connectionString)
+
+	api.Up()
+}
+
+func heatControl(connectionString string) {
+	storage, err := storage.NewSQLiteWritingGateway(connectionString)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
 	heatProvider := heat.NewHeatStateProvider()
 
 	sensor, err := sensor.TemperatureSensor()
@@ -36,8 +54,7 @@ func main() {
 
 	temperatureChanges := sensor.AuditChanges()
 
-	for {
-		temperature := <-temperatureChanges
+	for temperature, ok := <-temperatureChanges; ok; {
 
 		if err := temperature.Error(); err != nil {
 			log.Println(err)
@@ -45,7 +62,6 @@ func main() {
 
 		heatProvider.Next(temperature.Celsius()).Apply()
 		storage.Save(temperature)
-		fmt.Println(temperature.Celsius())
 	}
 }
 

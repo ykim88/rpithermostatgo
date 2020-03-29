@@ -8,7 +8,7 @@ import (
 )
 
 func TestSave(t *testing.T) {
-	gateway := storage.NewSQLiteStorageGateway(ConnectionString)
+	gateway, _ := storage.NewSQLiteWritingGateway(ConnectionString)
 	temperature := &fakeTemperature{}
 	expected := temperature.Celsius()
 
