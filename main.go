@@ -13,6 +13,7 @@ import (
 func main() {
 	logFile := setupLog()
 	defer logFile.Close()
+
 	user, err := user.Current()
 	if err != nil {
 		log.Fatal(err.Error())
