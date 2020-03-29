@@ -13,7 +13,7 @@ func main() {
 	logFile := setupLog()
 	defer logFile.Close()
 
-	connectionString := "/tmp/RPiThermostatGo.db"
+	connectionString := "$HOME/RPiThermostatGo.db"
 	storage.CreateDbSchemaIfNotExists(connectionString)
 	storage := storage.NewSQLiteStorageGateway(connectionString)
 	heatProvider := heat.NewHeatStateProvider()

@@ -2,9 +2,6 @@ package sensor
 
 import (
 	"RPiThermostatGo/sensor/driver"
-	"fmt"
-	"io/ioutil"
-	"strings"
 	"time"
 )
 
@@ -17,20 +14,24 @@ type Sensor interface {
 
 type sensorDriver interface {
 	Read() (float64, error)
+	Close() error
 }
 
 func TemperatureSensor() (Sensor, error) {
-	data, err := ioutil.ReadFile("/sys/bus/w1/devices/w1_bus_master1/w1_master_slaves")
+	// data, err := ioutil.ReadFile("/sys/bus/w1/devices/w1_bus_master1/w1_master_slaves")
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// sensors := strings.Split(string(data), "\n")
+	// if len(sensors) > 0 {
+	// 	sensors = sensors[:len(sensors)-1]
+	// }
+	driver, err := driver.NewPeriphDriver()
 	if err != nil {
 		return nil, err
 	}
-
-	sensors := strings.Split(string(data), "\n")
-	if len(sensors) > 0 {
-		sensors = sensors[:len(sensors)-1]
-	}
-
-	return &temperaturSensor{driver: driver.NewDriver(fmt.Sprintf(sensorsPath, sensors[0]))}, nil
+	return &temperaturSensor{driver: driver}, nil
 }
 
 type temperaturSensor struct {
@@ -49,6 +50,8 @@ func (s *temperaturSensor) AuditChanges() <-chan *Temperature {
 
 	go func(sensor *temperaturSensor, valueRead chan *Temperature) {
 		defer close(valueRead)
+		defer sensor.driver.Close()
+
 		sensor.running = true
 
 		for sensor.running {
