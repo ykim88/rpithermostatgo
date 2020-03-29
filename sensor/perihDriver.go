@@ -1,4 +1,4 @@
-package driver
+package sensor
 
 import (
 	"periph.io/x/periph/devices/ds18b20"

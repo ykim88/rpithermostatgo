@@ -1,7 +1,6 @@
 package sensor
 
 import (
-	"RPiThermostatGo/sensor/driver"
 	"time"
 )
 
@@ -18,16 +17,7 @@ type sensorDriver interface {
 }
 
 func TemperatureSensor() (Sensor, error) {
-	// data, err := ioutil.ReadFile("/sys/bus/w1/devices/w1_bus_master1/w1_master_slaves")
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// sensors := strings.Split(string(data), "\n")
-	// if len(sensors) > 0 {
-	// 	sensors = sensors[:len(sensors)-1]
-	// }
-	driver, err := driver.NewPeriphDriver()
+	driver, err := NewPeriphDriver()
 	if err != nil {
 		return nil, err
 	}
