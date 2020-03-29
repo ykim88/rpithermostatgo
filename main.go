@@ -30,8 +30,8 @@ func main() {
 	for {
 		temperature := <-temperatureChanges
 
-		if temperature.Error != nil {
-			log.Println(temperature.Error.Error())
+		if err := temperature.Error(); err != nil {
+			log.Println(err)
 		}
 
 		heatProvider.Next(temperature.Celsius()).Apply()

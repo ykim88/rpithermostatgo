@@ -45,7 +45,7 @@ func (d *periphDriver) Read() (float64, error) {
 		return -56, err
 	}
 
-	return float64(temperature), nil
+	return temperature.Celsius(), nil
 }
 
 func (d *periphDriver) Close() error {

@@ -1,7 +1,6 @@
 package storage_test
 
 import (
-	"RPiThermostatGo/sensor"
 	"RPiThermostatGo/storage"
 	"testing"
 
@@ -11,7 +10,7 @@ import (
 
 func TestSave(t *testing.T) {
 	gateway := storage.NewSQLiteStorageGateway(ConnectionString)
-	temperature := &sensor.Temperature{}
+	temperature := &fakeTemperature{}
 	expected := temperature.Celsius()
 
 	err := gateway.Save(temperature)
@@ -19,4 +18,15 @@ func TestSave(t *testing.T) {
 	assert.Nil(t, err)
 	savedTemperature := Database.ReadAll()
 	assert.Equal(t, expected, savedTemperature[0])
+}
+
+type fakeTemperature struct {
+}
+
+func (t *fakeTemperature) Celsius() float64 {
+	return 21
+}
+
+func (t *fakeTemperature) Error() error {
+	return nil
 }
