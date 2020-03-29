@@ -37,12 +37,10 @@ func TemperatureSensor() (Sensor, error) {
 type temperaturSensor struct {
 	driver  sensorDriver
 	running bool
-	timer   *time.Timer
 }
 
 func (s *temperaturSensor) Close() {
 	s.running = false
-	s.timer.Stop()
 }
 
 func (s *temperaturSensor) AuditChanges() <-chan Temperature {
