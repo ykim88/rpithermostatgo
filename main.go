@@ -54,8 +54,8 @@ func heatControl(connectionString string) {
 
 	temperatureChanges := sensor.AuditChanges()
 
-	for temperature, ok := <-temperatureChanges; ok; {
-
+	for {
+		temperature := <-temperatureChanges
 		if err := temperature.Error(); err != nil {
 			log.Println(err)
 		}
