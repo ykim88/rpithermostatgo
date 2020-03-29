@@ -2,7 +2,6 @@ package storage
 
 import (
 	"RPiThermostatGo/sensor"
-	"database/sql"
 
 	_ "github.com/mattn/go-sqlite3" //sqliteDriver
 )
@@ -13,20 +12,21 @@ type StorageWritingGateway interface {
 
 func NewSQLiteWritingGateway(connectionString string) (StorageWritingGateway, error) {
 
-	connection, err := sql.Open("sqlite3", connectionString)
-	if err != nil {
-		return nil, err
-	}
-	return &sqliteWritingGateway{connection: connection}, nil
+	return &sqliteWritingGateway{connectionString: connectionString}, nil
 }
 
 type sqliteWritingGateway struct {
-	connection *sql.DB
+	connectionString string
 }
 
 func (g *sqliteWritingGateway) Save(temperature sensor.Temperature) error {
+	connection, err := open(g.connectionString)
+	if err != nil {
+		return err
+	}
+	defer connection.Close()
 
-	insert, err := g.connection.Prepare("INSERT INTO Temperature (Value) VALUES (?)")
+	insert, err := connection.Prepare("INSERT INTO Temperature (Value) VALUES (?)")
 	defer insert.Close()
 	if err != nil {
 		return err
