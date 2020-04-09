@@ -4,8 +4,6 @@ import (
 	"time"
 )
 
-const sensorsPath = "/sys/bus/w1/devices/%s/w1_slave"
-
 type Sensor interface {
 	AuditChanges() <-chan Temperature
 	Close()

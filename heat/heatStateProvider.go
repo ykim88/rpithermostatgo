@@ -1,10 +1,10 @@
 package heat
 
-type HeatStateProvider interface {
-	Next(temperature float64) HeatState
+type heatStateProvider interface {
+	GetState(temperature float64) HeatState
 }
 
-func NewHeatStateProvider() HeatStateProvider {
+func newHeatStateProvider() heatStateProvider {
 
 	passThrough := &heatStateChain{heatStateProvider: new(passThroughProvider), next: nil}
 	start := &heatStateChain{heatStateProvider: newStartStateProvider(18), next: passThrough}
@@ -12,16 +12,16 @@ func NewHeatStateProvider() HeatStateProvider {
 }
 
 type heatStateChain struct {
-	heatStateProvider HeatStateProvider
+	heatStateProvider heatStateProvider
 	next              *heatStateChain
 }
 
-func (h *heatStateChain) Next(temperature float64) HeatState {
+func (h *heatStateChain) GetState(temperature float64) HeatState {
 
-	handler := h.heatStateProvider.Next(temperature)
+	handler := h.heatStateProvider.GetState(temperature)
 	if handler != nil {
 		return handler
 	}
 
-	return h.next.Next(temperature)
+	return h.next.GetState(temperature)
 }

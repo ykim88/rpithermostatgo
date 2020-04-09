@@ -1,6 +1,6 @@
 package heat
 
-func newStopStateProvider(maxTemperature float64) HeatStateProvider {
+func newStopStateProvider(maxTemperature float64) heatStateProvider {
 
 	return &stopProvider{maxTemperature: maxTemperature, stop: new(stopState)}
 }
@@ -10,7 +10,7 @@ type stopProvider struct {
 	stop           HeatState
 }
 
-func (p *stopProvider) Next(temperature float64) HeatState {
+func (p *stopProvider) GetState(temperature float64) HeatState {
 
 	if temperature > p.maxTemperature {
 

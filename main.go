@@ -43,7 +43,7 @@ func heatControl(connectionString string) {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	heatProvider := heat.NewHeatStateProvider()
+	heat := heat.NewHeat()
 
 	sensor, err := sensor.TemperatureSensor()
 	if err != nil {
@@ -58,9 +58,10 @@ func heatControl(connectionString string) {
 		temperature := <-temperatureChanges
 		if err := temperature.Error(); err != nil {
 			log.Println(err)
+			continue
 		}
 
-		heatProvider.Next(temperature.Celsius()).Apply()
+		_ = heat.NextState(temperature.Celsius())
 		storage.Save(temperature)
 	}
 }
