@@ -47,7 +47,7 @@ func heatControl(connectionString string) {
 
 	sensor, err := sensor.TemperatureSensor()
 	if err != nil {
-		sensor.Close()
+	
 		log.Fatal(err.Error())
 	}
 	defer sensor.Close()
