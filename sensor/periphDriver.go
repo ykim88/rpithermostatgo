@@ -24,7 +24,7 @@ func NewPeriphDriver() (*periphDriver, error) {
 		return nil, err
 	}
 
-	return &periphDriver{sensor: sensor, bus: oneWBus, resolution: 10}, nil
+	return &periphDriver{sensor: sensor, bus: oneWBus, resolution: 12}, nil
 }
 
 type periphDriver struct {
