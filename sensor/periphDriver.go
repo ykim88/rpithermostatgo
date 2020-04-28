@@ -19,7 +19,7 @@ func NewPeriphDriver() (*periphDriver, error) {
 		return nil, err
 	}
 
-	sensor, err := ds18b20.New(oneWBus, addres[0], 11)
+	sensor, err := ds18b20.New(oneWBus, addres[0], 12)
 	if err != nil {
 		return nil, err
 	}
