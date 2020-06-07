@@ -1,12 +1,13 @@
-package sensor
+package drivers
 
 import (
+	"periph.io/x/periph/conn/physic"
 	"periph.io/x/periph/devices/ds18b20"
 	"periph.io/x/periph/experimental/host/netlink"
-	"periph.io/x/periph/conn/physic"
 	"periph.io/x/periph/host"
 )
 
+//not use many error
 func NewPeriphDriver() (*periphDriver, error) {
 	host.Init()
 
@@ -25,12 +26,12 @@ func NewPeriphDriver() (*periphDriver, error) {
 		return nil, err
 	}
 
-	return &periphDriver{sensor: sensor, bus: oneWBus, /*resolution: 12*/env: new(physic.Env)}, nil
+	return &periphDriver{sensor: sensor, bus: oneWBus /*resolution: 12*/, env: new(physic.Env)}, nil
 }
 
 type periphDriver struct {
-	sensor     *ds18b20.Dev
-	bus        *netlink.OneWire
+	sensor *ds18b20.Dev
+	bus    *netlink.OneWire
 	// resolution int
 	env *physic.Env
 }

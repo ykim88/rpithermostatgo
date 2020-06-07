@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"RPiThermostatGo/api"
 	"database/sql"
+	"rpithermostatgo/api"
 
 	_ "github.com/mattn/go-sqlite3" //sqliteDriver
 )

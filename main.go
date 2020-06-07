@@ -1,14 +1,15 @@
 package main
 
 import (
-	"RPiThermostatGo/api"
-	"RPiThermostatGo/heat"
-	"RPiThermostatGo/sensor"
-	"RPiThermostatGo/storage"
 	"fmt"
 	"log"
 	"os"
 	"os/user"
+	"rpithermostatgo/api"
+	"rpithermostatgo/heat"
+	"rpithermostatgo/sensor"
+	drivers "rpithermostatgo/sensor/drivers"
+	"rpithermostatgo/storage"
 )
 
 func main() {
@@ -31,25 +32,28 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	api := api.New(api.TemperatureController(gateway))
-
-	go heatControl(connectionString)
-
-	api.Up()
-}
-
-func heatControl(connectionString string) {
 	storage, err := storage.NewSQLiteWritingGateway(connectionString)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
+
+	api := api.New(api.TemperatureController(gateway))
+
+	go heatControl(storage)
+
+	api.Up()
+}
+
+func heatControl(gateway storage.StorageWritingGateway) {
+
 	heat := heat.NewHeat()
 
-	sensor, err := sensor.TemperatureSensor()
+	driver, err := drivers.NewSysfsDriver()
 	if err != nil {
-	
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
+	sensor := sensor.TemperatureSensor(driver)
+
 	defer sensor.Close()
 
 	temperatureChanges := sensor.AuditChanges()
@@ -62,7 +66,7 @@ func heatControl(connectionString string) {
 		}
 
 		_ = heat.NextState(temperature.Celsius())
-		storage.Save(temperature)
+		gateway.Save(temperature)
 	}
 }
 

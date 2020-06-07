@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"RPiThermostatGo/sensor"
+	"rpithermostatgo/sensor"
 
 	_ "github.com/mattn/go-sqlite3" //sqliteDriver
 )

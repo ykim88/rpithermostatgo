@@ -9,21 +9,18 @@ type Sensor interface {
 	Close()
 }
 
-type sensorDriver interface {
+type SensorDriver interface {
 	Read() (float64, error)
 	Close() error
 }
 
-func TemperatureSensor() (Sensor, error) {
-	driver, err := NewPeriphDriver()
-	if err != nil {
-		return nil, err
-	}
-	return &temperaturSensor{driver: driver}, nil
+func TemperatureSensor(driver SensorDriver) Sensor {
+
+	return &temperaturSensor{driver: driver}
 }
 
 type temperaturSensor struct {
-	driver  sensorDriver
+	driver  SensorDriver
 	running bool
 }
 

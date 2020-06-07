@@ -1,7 +1,7 @@
 package storage_test
 
 import (
-	"RPiThermostatGo/storage"
+	"rpithermostatgo/storage"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

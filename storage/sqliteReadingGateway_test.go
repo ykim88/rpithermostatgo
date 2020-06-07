@@ -1,8 +1,8 @@
 package storage_test
 
 import (
-	"RPiThermostatGo/storage"
 	"database/sql"
+	"rpithermostatgo/storage"
 	"testing"
 	"time"
 
