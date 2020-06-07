@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>RPiThermostat</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="weatherStylesheet" href="weatherStyle.css"> -->
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="script.js"></script>
+    <script>window.onload = function(){
+        loadTemperature().then(data => updateCurrentGr(data));
+        changeStatus();
+        increase();
+        decrees();
+        document.getElementById("sunny").style.visibility = "visible";
+      }
+    </script>
+</head>
+<body> 
+  <div class="weather">
+
+    <div id="sun-shower" class="icon sun-shower">
+      <div class="cloud"></div>
+      <div class="sun">
+        <div class="rays"></div>
+      </div>
+      <div class="rain"></div>
+    </div>
+    
+    <div id="thunder-storm" class="icon thunder-storm">
+      <div class="cloud"></div>
+      <div class="lightning">
+        <div class="bolt"></div>
+        <div class="bolt"></div>
+      </div>
+    </div>
+    
+    <div id="cloudy" class="icon cloudy">
+      <div class="cloud"></div>
+      <div class="cloud"></div>
+    </div>
+    
+    <div id="flurries" class="icon flurries">
+      <div class="cloud"></div>
+      <div class="snow">
+        <div class="flake"></div>
+        <div class="flake"></div>
+      </div>
+    </div>
+    
+    <div id="sunny" class="icon sunny">
+      <div class="sun">
+        <div class="rays"></div>
+      </div>
+    </div>
+    
+    <div id="rainy" class="icon rainy">
+      <div class="cloud"></div>
+      <div class="rain"></div>
+    </div>
+
+    <div class="info">
+      <div class="degrees">24.1</div>
+      <div class="location">
+        <i class="material-icons" style="color: rgba(255, 255, 255, 0.849);">location_on</i>
+        <span id="location">Bologna</span>
+      </div>
+    </div>
+  </div> 
+
+    <div class="thermostat">
+    <div class="bar">
+      <div class="inner_bar"></div>
+      <div class='hold left'>
+        <div class='fill fill1'></div>
+      </div>
+      <div class='hold right'>
+        <div class='fill fill2'></div>
+      </div>
+      <span id="state" onclick="changeStatus()">Heating</span>
+    </div>
+    <div class="shadow">
+      <div class="shadow-cube"></div>
+    </div>
+    <div class="number">
+      <span class="ext"></span>
+    </div>
+    <div class="center">
+      <span class="arrow minus" onclick="decrees()"><i class="material-icons">keyboard_arrow_left</i></span>
+      <span class="arrow plus" onclick="increase()"><i class="material-icons">keyboard_arrow_right</i></span>
+      <div class="small">
+        <span class="heat"></span>
+      </div>
+    </div>
+</body>
+</html>
