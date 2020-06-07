@@ -221,7 +221,7 @@ html, body {
 }
 .thermostat .center .small .heat {
   line-height: 150px;
-  font-size: 8vmin;
+  font-size: 253%;
   color: #ffffff;
   font-weight: 500;
 }
@@ -229,7 +229,7 @@ html, body {
   content: '°';
   display: block;
   position: absolute;
-  font-size: 6vmin;
+  font-size: 90%;
   top: -15px;
   right: 15px;
 }

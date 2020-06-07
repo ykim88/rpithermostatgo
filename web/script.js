@@ -13,7 +13,9 @@ var stateIndex = -1;
 var states = [new State("HEATING", "#fe4800"), new State("cooling", "#007af1"), new State("OFF", "white")];
 
 async function loadTemperature(){
-  let responce = await fetch("http://localhost:8080/temperature/current");
+  let host = document.location.hostname
+  let port = document.location.port
+  let responce = await fetch("http://"+host+":"+port+"/temperature/current");
   let data = await responce.text();
   return data;
 }
