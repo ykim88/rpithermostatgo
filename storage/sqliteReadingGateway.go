@@ -9,14 +9,20 @@ import (
 
 func NewSQLiteReadingGateway(connectionString string) (api.TemperatureGateway, error) {
 
-	return &sqliteReadingGateway{connectionString: connectionString}, nil
+	return &sqliteReadingGateway{connectionString: connectionString, cache: cache}, nil
 }
 
 type sqliteReadingGateway struct {
+	cache            temperatureCache
 	connectionString string
 }
 
 func (g *sqliteReadingGateway) GetLast() (float64, error) {
+
+	if temperature, err := g.cache.getLast(); err == nil {
+		return temperature, nil
+	}
+
 	connection, err := open(g.connectionString)
 	defer connection.Close()
 	if err != nil {

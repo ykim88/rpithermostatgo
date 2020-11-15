@@ -51,6 +51,7 @@ github.com/qmsk/go-logging v0.1.0/go.mod h1:H7uaeU7oLrdZEbfEAt/FVk81P8kioPlv67Un
 github.com/qmsk/go-web v0.3.0/go.mod h1:N2t5t+tn2pDpi5uK7Gvn8w5Cnk+zeK0MG5udFqzU9ng=
 github.com/snksoft/crc v0.0.0-20180218060251-b1d83c94b790 h1:CmeaVv+2D3RulxFTusqw/3HRkUYWVsiGNlTsqa7k6G8=
 github.com/snksoft/crc v0.0.0-20180218060251-b1d83c94b790/go.mod h1:5/gUOsgAm7OmIhb6WJzw7w5g2zfJi4FrHYgGPdshE+A=
+github.com/stretchr/objx v0.1.0 h1:4G4v2dO3VZwixGIRoQ5Lfboy6nUhCyYzaqnIAPPhYs4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
@@ -88,3 +89,5 @@ gopkg.in/yaml.v2 v2.2.8 h1:obN1ZagJSUGI0Ek/LBmuj4SNLPfIny3KsKFopxRdj10=
 gopkg.in/yaml.v2 v2.2.8/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 periph.io/x/periph v3.6.2+incompatible h1:B9vqhYVuhKtr6bXua8N9GeBEvD7yanczCvE0wU2LEqw=
 periph.io/x/periph v3.6.2+incompatible/go.mod h1:EWr+FCIU2dBWz5/wSWeiIUJTriYv9v2j2ENBmgYyy7Y=
+periph.io/x/periph v3.6.4+incompatible h1:8FyXTbu9lcMVofz8mf+cj1pzTLN4V6EuPY2EF+DoJF4=
+periph.io/x/periph v3.6.4+incompatible/go.mod h1:EWr+FCIU2dBWz5/wSWeiIUJTriYv9v2j2ENBmgYyy7Y=

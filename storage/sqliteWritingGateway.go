@@ -12,10 +12,11 @@ type StorageWritingGateway interface {
 
 func NewSQLiteWritingGateway(connectionString string) (StorageWritingGateway, error) {
 
-	return &sqliteWritingGateway{connectionString: connectionString}, nil
+	return &sqliteWritingGateway{connectionString: connectionString, cache: cache}, nil
 }
 
 type sqliteWritingGateway struct {
+	cache            temperatureCache
 	connectionString string
 }
 
@@ -36,5 +37,6 @@ func (g *sqliteWritingGateway) Save(temperature sensor.Temperature) error {
 	if err != nil {
 		return err
 	}
+	g.cache.update(celsius)
 	return nil
 }

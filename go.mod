@@ -9,5 +9,5 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/ykim88/go-onewire v0.0.0-20200510212144-7c10dd05a192
-	periph.io/x/periph v3.6.2+incompatible
+	periph.io/x/periph v3.6.4+incompatible
 )

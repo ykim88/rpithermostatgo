@@ -1,6 +1,8 @@
 package drivers
 
 import (
+	"rpithermostatgo/sensor"
+
 	"periph.io/x/periph/conn/physic"
 	"periph.io/x/periph/devices/ds18b20"
 	"periph.io/x/periph/experimental/host/netlink"
@@ -8,7 +10,7 @@ import (
 )
 
 //not use many error
-func NewPeriphDriver() (*periphDriver, error) {
+func NewPeriphDriver() (sensor.SensorDriver, error) {
 	host.Init()
 
 	oneWBus, err := netlink.New(001)

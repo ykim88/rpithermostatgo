@@ -18,19 +18,19 @@ func CreateDbSchemaIfNotExists(connectionString string) error {
 		return err
 	}
 
-	query, err := connection.Prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name=?")
+	queryTableExists, err := connection.Prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name=?")
 	if err != nil {
 		return err
 	}
-	defer query.Close()
+	defer queryTableExists.Close()
 
-	var exists bool
-	err = query.QueryRow("Temperature").Scan(&exists)
+	var tableExists bool
+	err = queryTableExists.QueryRow("Temperature").Scan(&tableExists)
 	if err != nil && sql.ErrNoRows != err {
 		return err
 	}
 
-	if !exists {
+	if !tableExists {
 		createTable, err := connection.Prepare("CREATE TABLE Temperature (Value REAL NOT NULL, DateTime DATETIME DEFAULT CURRENT_TIMESTAMP)")
 		if err != nil {
 			return err
@@ -42,5 +42,31 @@ func CreateDbSchemaIfNotExists(connectionString string) error {
 		}
 
 	}
+
+	queryIndexExists, err := connection.Prepare("SELECT 1 FROM sqlite_master WHERE type = 'index' AND name=?")
+	if err != nil {
+		return err
+	}
+	defer queryIndexExists.Close()
+
+	var indexExists bool
+	err = queryIndexExists.QueryRow("Temperature_DateTime_INDEX").Scan(&indexExists)
+	if err != nil && sql.ErrNoRows != err {
+		return err
+	}
+
+	if !indexExists {
+		createIndex, err := connection.Prepare("CREATE INDEX Temperature_DateTime_INDEX ON Temperature (DateTime);")
+		if err != nil {
+			return err
+		}
+		defer createIndex.Close()
+		createIndex.Exec()
+		if err != nil {
+			return err
+		}
+
+	}
+
 	return nil
 }
