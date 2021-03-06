@@ -5,10 +5,10 @@ import (
 	"sync"
 )
 
-var cache temperatureCache
+var cache *temperatureCache
 
 func init() {
-	cache = temperatureCache{}
+	cache = new(temperatureCache)
 }
 
 type temperatureCache struct {

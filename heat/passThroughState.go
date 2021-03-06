@@ -2,6 +2,6 @@ package heat
 
 type passThroughState struct{}
 
-func (h *passThroughState) Apply() error {
+func (h *passThroughState) apply() error {
 	return nil
 }

@@ -4,7 +4,7 @@ class State {
     this.color = color;
   }
 }
-
+let source;
 var gradi = 19;
 var max = 34;
 var min = 2;
@@ -18,6 +18,15 @@ async function loadTemperature(){
   let responce = await fetch("http://"+host+":"+port+"/temperature/current");
   let data = await responce.text();
   return data;
+}
+
+function SSESubscription(){
+  let host = document.location.hostname
+  let port = document.location.port
+  source = new EventSource("http://"+host+":"+port+"/temperature/realTime");
+  source.onopen = _ => loadTemperature();
+  source.onerror = e => console.log(e);
+  source.onmessage = event => updateCurrentGr(event.data);
 }
 
 function changeStatus() {

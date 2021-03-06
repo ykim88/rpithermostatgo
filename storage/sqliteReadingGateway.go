@@ -7,13 +7,13 @@ import (
 	_ "github.com/mattn/go-sqlite3" //sqliteDriver
 )
 
-func NewSQLiteReadingGateway(connectionString string) (api.TemperatureGateway, error) {
+func NewSQLiteReadingGateway(connectionString string) api.TemperatureGateway {
 
-	return &sqliteReadingGateway{connectionString: connectionString, cache: cache}, nil
+	return &sqliteReadingGateway{connectionString: connectionString, cache: cache}
 }
 
 type sqliteReadingGateway struct {
-	cache            temperatureCache
+	cache            *temperatureCache
 	connectionString string
 }
 

@@ -1,7 +1,7 @@
 package heat
 
 type heatStateProvider interface {
-	GetState(temperature float64) HeatState
+	getState(temperature float64) heatState
 }
 
 func newHeatStateProvider() heatStateProvider {
@@ -16,12 +16,12 @@ type heatStateChain struct {
 	next              *heatStateChain
 }
 
-func (h *heatStateChain) GetState(temperature float64) HeatState {
+func (h *heatStateChain) getState(temperature float64) heatState {
 
-	handler := h.heatStateProvider.GetState(temperature)
+	handler := h.heatStateProvider.getState(temperature)
 	if handler != nil {
 		return handler
 	}
 
-	return h.next.GetState(temperature)
+	return h.next.getState(temperature)
 }

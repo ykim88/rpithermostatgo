@@ -13,6 +13,7 @@ html, body {
   margin: 0;
   background: rgb(27, 27, 27);
   font-family: 'Roboto';
+  touch-action: manipulation;
 }
 
 .center_radius, .thermostat, .thermostat .bar, .thermostat .center, .thermostat .center .small {

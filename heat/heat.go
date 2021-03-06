@@ -1,19 +1,18 @@
 package heat
 
-type Heat interface {
-	NextState(temperature float64) error
+type heat interface {
+	nextState(temperature float64) error
 }
 
-type heat struct {
+func newHeat() heat {
+	return &simple_Heat{stateProvider: newHeatStateProvider()}
+}
+
+type simple_Heat struct {
 	stateProvider heatStateProvider
 }
 
-func (h *heat) NextState(temperature float64) error {
+func (h *simple_Heat) nextState(temperature float64) error {
 
-	return h.stateProvider.GetState(temperature).Apply()
-}
-
-func NewHeat() Heat {
-
-	return &heat{stateProvider: newHeatStateProvider()}
+	return h.stateProvider.getState(temperature).apply()
 }

@@ -10,11 +10,11 @@ import (
 )
 
 func TemperatureController(gateway TemperatureGateway) *temperatreController {
-	return &temperatreController{temperatureGateway: gateway, indexHandler: http.FileServer(http.Dir("./web"))}
+	return &temperatreController{temperatureGateway: gateway}
 }
 
 type temperatreController struct {
-	indexHandler       http.Handler
+	// indexHandler       http.Handler
 	temperatureGateway TemperatureGateway
 }
 

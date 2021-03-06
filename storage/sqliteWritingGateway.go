@@ -1,42 +1,42 @@
 package storage
 
 import (
-	"rpithermostatgo/sensor"
+	"log"
+	"rpithermostatgo/heat/sensor"
 
 	_ "github.com/mattn/go-sqlite3" //sqliteDriver
 )
 
 type StorageWritingGateway interface {
-	Save(celsius sensor.Temperature) error
+	Save(celsius sensor.Temperature)
 }
 
-func NewSQLiteWritingGateway(connectionString string) (StorageWritingGateway, error) {
+func NewSQLiteWritingGateway(connectionString string) StorageWritingGateway {
 
-	return &sqliteWritingGateway{connectionString: connectionString, cache: cache}, nil
+	return &sqliteWritingGateway{connectionString: connectionString, cache: cache}
 }
 
 type sqliteWritingGateway struct {
-	cache            temperatureCache
+	cache            *temperatureCache
 	connectionString string
 }
 
-func (g *sqliteWritingGateway) Save(temperature sensor.Temperature) error {
+func (g *sqliteWritingGateway) Save(temperature sensor.Temperature) {
 	connection, err := open(g.connectionString)
 	if err != nil {
-		return err
+		log.Println(err.Error())
 	}
 	defer connection.Close()
 
 	insert, err := connection.Prepare("INSERT INTO Temperature (Value) VALUES (?)")
 	defer insert.Close()
 	if err != nil {
-		return err
+		log.Println(err.Error())
 	}
 	celsius := temperature.Celsius()
 	_, err = insert.Exec(celsius)
 	if err != nil {
-		return err
+		log.Println(err.Error())
 	}
 	g.cache.update(celsius)
-	return nil
 }

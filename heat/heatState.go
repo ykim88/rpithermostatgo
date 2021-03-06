@@ -1,5 +1,5 @@
 package heat
 
-type HeatState interface {
-	Apply() error
+type heatState interface {
+	apply() error
 }

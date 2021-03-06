@@ -2,7 +2,7 @@ package heat
 
 type startState struct{}
 
-func (s *startState) Apply() error {
+func (s *startState) apply() error {
 
 	return nil
 }

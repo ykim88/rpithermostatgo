@@ -2,6 +2,6 @@ package heat
 
 type passThroughProvider struct{}
 
-func (p *passThroughProvider) GetState(temperature float64) HeatState {
+func (p *passThroughProvider) getState(temperature float64) heatState {
 	return new(passThroughState)
 }

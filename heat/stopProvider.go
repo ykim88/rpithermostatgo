@@ -7,10 +7,10 @@ func newStopStateProvider(maxTemperature float64) heatStateProvider {
 
 type stopProvider struct {
 	maxTemperature float64
-	stop           HeatState
+	stop           heatState
 }
 
-func (p *stopProvider) GetState(temperature float64) HeatState {
+func (p *stopProvider) getState(temperature float64) heatState {
 
 	if temperature > p.maxTemperature {
 

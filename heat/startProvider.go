@@ -7,10 +7,10 @@ func newStartStateProvider(minTemperature float64) heatStateProvider {
 
 type startProvider struct {
 	minTemperature float64
-	start          HeatState
+	start          heatState
 }
 
-func (p *startProvider) GetState(temperature float64) HeatState {
+func (p *startProvider) getState(temperature float64) heatState {
 
 	if temperature < p.minTemperature {
 

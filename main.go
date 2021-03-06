@@ -7,8 +7,7 @@ import (
 	"os/user"
 	"rpithermostatgo/api"
 	"rpithermostatgo/heat"
-	"rpithermostatgo/sensor"
-	drivers "rpithermostatgo/sensor/drivers"
+	"rpithermostatgo/heat/sensor/drivers"
 	"rpithermostatgo/storage"
 )
 
@@ -27,47 +26,22 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	gateway, err := storage.NewSQLiteReadingGateway(connectionString)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	gateway := storage.NewSQLiteReadingGateway(connectionString)
 
-	storage, err := storage.NewSQLiteWritingGateway(connectionString)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	api := api.New(api.TemperatureController(gateway))
-
-	go heatControl(storage)
-
-	api.Up()
-}
-
-func heatControl(gateway storage.StorageWritingGateway) {
-
-	heat := heat.NewHeat()
+	controller := api.TemperatureController(gateway)
+	eventbus := api.NewEventBus()
+	sseController := api.TemperatureSSEController(eventbus)
+	api := api.New(controller, sseController)
 
 	driver, err := drivers.NewSysfsDriver()
 	if err != nil {
 		log.Fatal(err)
 	}
-	sensor := sensor.TemperatureSensor(driver)
 
-	defer sensor.Close()
-
-	temperatureChanges := sensor.AuditChanges()
-
-	for {
-		temperature := <-temperatureChanges
-		if err := temperature.Error(); err != nil {
-			log.Println(err)
-			continue
-		}
-
-		_ = heat.NextState(temperature.Celsius())
-		gateway.Save(temperature)
-	}
+	storage := storage.NewSQLiteWritingGateway(connectionString)
+	heatControl := heat.NewHeatControl(driver, storage.Save, eventbus.Push)
+	heatControl.Run()
+	api.Up()
 }
 
 func setupLog() *os.File {
